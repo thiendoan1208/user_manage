@@ -1,7 +1,8 @@
-import axios from "axios";
+import axios from "./customize-axios";
+// Tự do đổi tên import nếu là export default
 
 function fetchAllUsers() {
-    return axios.get("https://reqres.in/api/users?page=1");
+    return axios.get("/api/users?page=1");
 }
 
 export {fetchAllUsers};
