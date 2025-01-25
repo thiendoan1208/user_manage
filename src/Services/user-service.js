@@ -1,10 +1,20 @@
-import axios from "./customize-axios";
+import axios /*instance*/ from './customize-axios';
 // Tự do đổi tên import nếu là export default
 
-function fetchAllUsers() {
-    return axios.get("/api/users?page=1");
+function fetchAllUsers(pages) {
+  return axios.get(`/api/users?page=${pages}`); /* res.data */
 }
 
-export {fetchAllUsers};
+
+
+export { fetchAllUsers };
 
 // cần export nhiều thì sử dụng {}
+
+/*
+Khi gọi fetchAllUsers:
+
+Nó sử dụng instance với baseURL = 'https://reqres.in'.
+Tự động ghép endpoint "/api/users?page=1" vào baseURL.
+Interceptor sẽ xử lý response và chỉ trả về phần data.
+ */
