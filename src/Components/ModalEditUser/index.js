@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { toast } from 'react-toastify';
 
@@ -7,32 +7,24 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 
-import { postCreateUser } from '~/Services/user-service';
-
-function AddNewUser({ show, handleClose, handleUpdateTableUser }) {
+function ModalEditUser({ show, handleClose, dataUserEdit }) {
   const [name, setName] = useState('');
   const [job, setJob] = useState('');
 
-  const handleSaveUser = async () => {
-    let res = await postCreateUser(name, job);
-
-    if (res && res.id) {
-      handleClose();
-      setName('');
-      setJob('');
-      toast.success('Create new user success !! ');
-      handleUpdateTableUser({first_name: name, id: res.id});
-    } else {
-      toast.error('Cannot create new user ');
+  useEffect(() => {
+    if (show) {
+      setName(dataUserEdit.first_name);
     }
-  };
+  }, [dataUserEdit, show]);
+
+  const handleEditUser = () => {};
 
   return (
     <>
       <div className="modal show" style={{ display: 'block', position: 'initial' }}>
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Add new user</Modal.Title>
+            <Modal.Title>Edit user</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
@@ -68,8 +60,8 @@ function AddNewUser({ show, handleClose, handleUpdateTableUser }) {
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
-            <Button variant="primary" onClick={handleSaveUser}>
-              Save Changes
+            <Button variant="primary" onClick={handleEditUser}>
+              Confirm
             </Button>
           </Modal.Footer>
         </Modal>
@@ -78,4 +70,4 @@ function AddNewUser({ show, handleClose, handleUpdateTableUser }) {
   );
 }
 
-export default AddNewUser;
+export default ModalEditUser;
