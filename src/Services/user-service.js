@@ -5,9 +5,11 @@ function fetchAllUsers(pages) {
   return axios.get(`/api/users?page=${pages}`); /* res.data */
 }
 
+const postCreateUser = (name, job) => {
+  return axios.post('/api/users', { name: name, job: job });
+};
 
-
-export { fetchAllUsers };
+export { fetchAllUsers, postCreateUser };
 
 // cần export nhiều thì sử dụng {}
 
