@@ -6,14 +6,19 @@ import _ from 'lodash';
 
 import AddNewUser from '../AddNewUser';
 import ModalEditUser from '../ModalEditUser';
+import ModalConfirm from '../ModalConfirm';
 
 function TableUsers(props) {
   const [listUsers, setListUsers] = useState([]);
   const [totalUser, setTotalUser] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [isShowModalAddUser, setIsShowModalAddUser] = useState(false);
+
   const [isShowModalEditUser, setIsShowModalEditUser] = useState(false);
   const [dataUserEdit, setDataUserEdit] = useState({});
+
+  const [isShowModalDelete, setIsShowModalDelete] = useState(false);
+  const [dataUserDelete, setDataUserDelete] = useState({});
 
   // Add new user
   const handleUpdateTableUser = (user) => {
@@ -51,16 +56,23 @@ function TableUsers(props) {
     getUsers(value);
   };
 
-  // Close modal add user
+  // Close modal
   const handleClose = () => {
     setIsShowModalAddUser(false);
     setIsShowModalEditUser(false);
+    setIsShowModalDelete(false);
   };
 
   // Modal Edit user Open/Close
   const handleEditUser = (user) => {
     setDataUserEdit(user);
     setIsShowModalEditUser(true);
+  };
+
+  // Modal Delete user
+  const handleDeleteUser = (user) => {
+    setIsShowModalDelete(true);
+    setDataUserDelete(user);
   };
 
   return (
@@ -109,7 +121,15 @@ function TableUsers(props) {
                   >
                     Edit
                   </button>
-                  <button className=" mx-1 btn btn-danger">Delete</button>
+
+                  <button
+                    className="mx-1 btn btn-danger"
+                    onClick={() => {
+                      handleDeleteUser(item);
+                    }}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
@@ -128,6 +148,8 @@ function TableUsers(props) {
         dataUserEdit={dataUserEdit}
         handleEditUserFromModal={handleEditUserFromModal}
       />
+
+      <ModalConfirm show={isShowModalDelete} handleClose={handleClose} dataUserDelete={dataUserDelete} />
     </>
   );
 }

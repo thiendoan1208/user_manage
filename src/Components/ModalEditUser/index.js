@@ -27,7 +27,7 @@ function ModalEditUser({ show, handleClose, dataUserEdit, handleEditUserFromModa
         id: dataUserEdit.id,
       });
       handleClose();
-      toast.success("Update user success")
+      toast.success('Update user success');
     }
   };
 
