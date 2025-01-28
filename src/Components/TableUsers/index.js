@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import { fetchAllUsers } from '~/Services/user-service';
 import Pagination from '@mui/material/Pagination';
+import _ from 'lodash';
 
 import AddNewUser from '../AddNewUser';
 import ModalEditUser from '../ModalEditUser';
@@ -17,6 +18,18 @@ function TableUsers(props) {
   // Add new user
   const handleUpdateTableUser = (user) => {
     setListUsers([user, ...listUsers]);
+  };
+
+  const handleEditUserFromModal = (user) => {
+    let cloneListUsers = _.cloneDeep(listUsers);
+    let index = listUsers.findIndex((item) => item.id === user.id);
+    cloneListUsers[index].first_name = user.first_name;
+    setListUsers(cloneListUsers);
+
+    // Tác dụng của cloneDeep trong Lodash.
+    // Nếu không dùng cloneDeep thì khi sao chép biến cloneListUsers sang listUsers sẽ bị trỏ đến cùng 1 vùng nhớ
+    //  từ đó gây ra sự thay đổi kể cả khi ta chưa bấm xác nhận để đổi tên và sẽ không ảnh hưởng đến mảng gốc.
+    // Khi dùng cloneDeep thì sẽ khiến cho khi sao chép thì 2 biến sẽ chỉ đến 2 vùng nhớ khác nhau, từ đó không ảnh hưởng đến nhau.
   };
 
   // Get user API
@@ -109,7 +122,12 @@ function TableUsers(props) {
 
       <AddNewUser show={isShowModalAddUser} handleClose={handleClose} handleUpdateTableUser={handleUpdateTableUser} />
 
-      <ModalEditUser show={isShowModalEditUser} handleClose={handleClose} dataUserEdit={dataUserEdit} />
+      <ModalEditUser
+        show={isShowModalEditUser}
+        handleClose={handleClose}
+        dataUserEdit={dataUserEdit}
+        handleEditUserFromModal={handleEditUserFromModal}
+      />
     </>
   );
 }

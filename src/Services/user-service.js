@@ -9,7 +9,11 @@ const postCreateUser = (name, job) => {
   return axios.post('/api/users', { name: name, job: job });
 };
 
-export { fetchAllUsers, postCreateUser };
+const putUpdateUser = (name, job) => {
+  return axios.put('/api/user/2', { name: name, job: job });
+};
+
+export { fetchAllUsers, postCreateUser, putUpdateUser };
 
 // cần export nhiều thì sử dụng {}
 

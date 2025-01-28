@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { putUpdateUser } from '~/Services/user-service';
 
 import { toast } from 'react-toastify';
 
@@ -7,7 +8,7 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 
-function ModalEditUser({ show, handleClose, dataUserEdit }) {
+function ModalEditUser({ show, handleClose, dataUserEdit, handleEditUserFromModal }) {
   const [name, setName] = useState('');
   const [job, setJob] = useState('');
 
@@ -17,7 +18,18 @@ function ModalEditUser({ show, handleClose, dataUserEdit }) {
     }
   }, [dataUserEdit, show]);
 
-  const handleEditUser = () => {};
+  const handleEditUser = async () => {
+    let res = await putUpdateUser(name, job);
+
+    if (res && res.updatedAt) {
+      handleEditUserFromModal({
+        first_name: name,
+        id: dataUserEdit.id,
+      });
+      handleClose();
+      toast.success("Update user success")
+    }
+  };
 
   return (
     <>
