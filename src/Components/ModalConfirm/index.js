@@ -1,10 +1,21 @@
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import { deleteUser } from '~/Services/user-service';
+import { toast } from 'react-toastify';
 
-function ModalConfirm({ show, handleClose, dataUserDelete }) {
-  const handleDeleteUser = () => {
-    console.log(dataUserDelete);
+function ModalConfirm({ show, handleClose, dataUserDelete, handleDeleteUserFromModal }) {
+  const handleDeleteUser = async () => {
+    let res = await deleteUser(dataUserDelete.id);
+    if (res && +res.statusCode === 204) {
+      toast.success('Delete user success !');
+      handleDeleteUserFromModal(dataUserDelete);
+      handleClose();
+    } else {
+      toast.error('An error ocurs');
+    }
   };
+
+  // Dấu + có tác dụng trong th trả ra 1 một chuỗi string thì sẽ convert nó sang kiểu sô nguyên.
 
   return (
     <>
@@ -15,10 +26,10 @@ function ModalConfirm({ show, handleClose, dataUserDelete }) {
           </Modal.Header>
           <Modal.Body>
             <div>
-                Are you sure to delete this user ?
-                <br/>
-                <b>Email: {dataUserDelete.email}</b>
-                </div>
+              Are you sure to delete this user ?
+              <br />
+              <b>Email: {dataUserDelete.email}</b>
+            </div>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>

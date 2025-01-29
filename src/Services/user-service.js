@@ -10,10 +10,14 @@ const postCreateUser = (name, job) => {
 };
 
 const putUpdateUser = (name, job) => {
-  return axios.put('/api/user/2', { name: name, job: job });
+  return axios.put('/api/users/2', { name: name, job: job });
 };
 
-export { fetchAllUsers, postCreateUser, putUpdateUser };
+const deleteUser = (id) => {
+  return axios.delete(`api/users/${id}`);
+};
+
+export { fetchAllUsers, postCreateUser, putUpdateUser, deleteUser };
 
 // cần export nhiều thì sử dụng {}
 
