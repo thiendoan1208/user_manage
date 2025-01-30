@@ -7,6 +7,8 @@ import _ from 'lodash';
 import AddNewUser from '../AddNewUser';
 import ModalEditUser from '../ModalEditUser';
 import ModalConfirm from '../ModalConfirm';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowUpLong, faArrowDownLong } from '@fortawesome/free-solid-svg-icons';
 
 function TableUsers(props) {
   const [listUsers, setListUsers] = useState([]);
@@ -19,6 +21,9 @@ function TableUsers(props) {
 
   const [isShowModalDelete, setIsShowModalDelete] = useState(false);
   const [dataUserDelete, setDataUserDelete] = useState({});
+
+  const [sortBy, setSortBy] = useState('id');
+  const [sortField, setSortField] = useState('asc');
 
   // Add new user
   const handleUpdateTableUser = (user) => {
@@ -81,6 +86,27 @@ function TableUsers(props) {
     setListUsers(cloneListUsers);
   };
 
+  // Sort Item
+  const handleSort = (sortByParam, sortFieldParam) => {
+    setSortBy(sortByParam);
+    setSortField(sortFieldParam);
+
+    let cloneListUsers = _.cloneDeep(listUsers);
+    cloneListUsers = _.orderBy(cloneListUsers, [sortByParam], [sortFieldParam]);
+
+    /* 
+    Tác dụng của _.orderBy: truyền vào 3 giá trị, 
+    
+    var data = _.sortBy(arr_of_obj, ["type", "name"], ["asc", "desc"])
+
+    1. sắp xếp theo mảng nào
+    2. dùng phần tử nào trong obj bên trong mảng để sắp xếp
+    3. Sắp xếp theo kiểu desc hay asc (lớn nhỏ, nhỏ lớn) 
+    */
+
+    setListUsers(cloneListUsers);
+  };
+
   return (
     <>
       <div className="flex items-center justify-between ">
@@ -102,8 +128,48 @@ function TableUsers(props) {
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>#</th>
-            <th>First Name</th>
+            <th>
+              <div className="flex justify-between">
+                <span>ID</span>
+                <span>
+                  <FontAwesomeIcon
+                    className="px-1 cursor-pointer hover:opacity-70 transition-all  "
+                    icon={faArrowDownLong}
+                    onClick={() => {
+                      handleSort('id', 'desc');
+                    }}
+                  />
+                  <FontAwesomeIcon
+                    className="px-1 cursor-pointer hover:opacity-70 transition-all  "
+                    icon={faArrowUpLong}
+                    onClick={() => {
+                      handleSort('id', 'asc');
+                    }}
+                  />
+                </span>
+              </div>
+            </th>
+            <th>
+              <div className="flex justify-between">
+                <span>First Name</span>
+                <span>
+                  <FontAwesomeIcon
+                    className="px-1 cursor-pointer hover:opacity-70 transition-all  "
+                    icon={faArrowDownLong}
+                    onClick={() => {
+                      handleSort('first_name', 'desc');
+                    }}
+                  />
+                  <FontAwesomeIcon
+                    className="px-1 cursor-pointer hover:opacity-70 transition-all  "
+                    icon={faArrowUpLong}
+                    onClick={() => {
+                      handleSort('first_name', 'asc');
+                    }}
+                  />
+                </span>
+              </div>
+            </th>
             <th>Last Name</th>
             <th>Email</th>
             <th>Action</th>
@@ -155,7 +221,12 @@ function TableUsers(props) {
         handleEditUserFromModal={handleEditUserFromModal}
       />
 
-      <ModalConfirm show={isShowModalDelete} handleClose={handleClose} dataUserDelete={dataUserDelete} handleDeleteUserFromModal={handleDeleteUserFromModal} />
+      <ModalConfirm
+        show={isShowModalDelete}
+        handleClose={handleClose}
+        dataUserDelete={dataUserDelete}
+        handleDeleteUserFromModal={handleDeleteUserFromModal}
+      />
     </>
   );
 }
