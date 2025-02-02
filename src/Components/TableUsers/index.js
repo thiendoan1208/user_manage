@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
-import { fetchAllUsers } from '~/Services/user-service';
 import Pagination from '@mui/material/Pagination';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowUpLong, faArrowDownLong } from '@fortawesome/free-solid-svg-icons';
 import _ from 'lodash';
+import { debounce } from 'lodash';
 
+import { fetchAllUsers } from '~/Services/user-service';
 import AddNewUser from '../AddNewUser';
 import ModalEditUser from '../ModalEditUser';
 import ModalConfirm from '../ModalConfirm';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowUpLong, faArrowDownLong } from '@fortawesome/free-solid-svg-icons';
 
 function TableUsers(props) {
   const [listUsers, setListUsers] = useState([]);
@@ -24,6 +25,8 @@ function TableUsers(props) {
 
   const [sortBy, setSortBy] = useState('id');
   const [sortField, setSortField] = useState('asc');
+
+  const [keyWord, setKeyWord] = useState('');
 
   // Add new user
   const handleUpdateTableUser = (user) => {
@@ -103,14 +106,33 @@ function TableUsers(props) {
     2. dùng phần tử nào trong obj bên trong mảng để sắp xếp
     3. Sắp xếp theo kiểu desc hay asc (lớn nhỏ, nhỏ lớn) 
     */
-
     setListUsers(cloneListUsers);
   };
+
+  // Handle Search
+
+  const handleSearchEventInput = (e) => {
+    let value = e.target.value
+    handleSearchEvent(value);
+    setKeyWord(value);
+  }
+
+  const handleSearchEvent = debounce((value) => {
+    let term = value;
+    if (term) {
+      let cloneListUsers = _.cloneDeep(listUsers);
+      cloneListUsers = cloneListUsers.filter((item) => item.email.includes(term));
+      setListUsers(cloneListUsers);
+    } else {
+      getUsers(1);
+    }
+
+  }, 500);
 
   return (
     <>
       <div className="flex items-center justify-between ">
-        <div className="my-4 flex items-center">
+        <div className="my-1 flex items-center">
           <span>
             <h6>List Users:</h6>
           </span>
@@ -123,6 +145,15 @@ function TableUsers(props) {
         >
           Add new user
         </button>
+      </div>
+
+      <div>
+        <input
+          className="border border-red-400 p-1 my-2 width-full"
+          placeholder="Find User..."
+          value={keyWord}
+          onChange={handleSearchEventInput}
+        />
       </div>
 
       <Table striped bordered hover>
