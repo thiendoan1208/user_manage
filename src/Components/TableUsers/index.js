@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 
 import Table from 'react-bootstrap/Table';
 import Pagination from '@mui/material/Pagination';
@@ -32,6 +32,8 @@ function TableUsers(props) {
   const [sortField, setSortField] = useState('asc');
 
   const [keyWord, setKeyWord] = useState('');
+
+  const [dataExport, setDataExport] = useState([]);
 
   // Add new user
   const handleUpdateTableUser = (user) => {
@@ -133,14 +135,41 @@ function TableUsers(props) {
     }
   }, 500);
 
-  // CSV
-  const csvData = [
-    ['firstname', 'lastname', 'email'],
-    ['Ahmed', 'Tomi', 'ah@smthing.co.com'],
-    ['Raed', 'Labes', 'rl@smthing.co.com'],
-    ['Yezzi', 'Min l3b', 'ymin@cocococo.com'],
+  // CSV Export Infomation to Excel
+  const getUserExport = (event, done) => {
+    let result = [];
+    if (listUsers && listUsers.length > 0) {
+      result.push(['ID', 'Email', 'First Name', 'Last Name']);
+      // eslint-disable-next-line array-callback-return
+      listUsers.map((item, index) => {
+        let arr = [];
+        arr[0] = item.id;
+        arr[1] = item.email;
+        arr[2] = item.first_name;
+        arr[3] = item.last_name;
+        result.push(arr);
+      });
+      setDataExport(result);
+      done();
+    }
+  };
+  // 2 tham số event và done là do thư viện trả về chứ không nhận từ trong code
+  /*
+   - Giải thích một chút về cách vận hành.
+   + đầu tiên hàm sẽ nhận vào 2 tham số được trả về từ thư viện là event và done
+   + ở phần click sẽ sử dụng async click để có thể báo rằng phải chờ onClick sử lý xong data thì chỗ data={} mới nhận data và in vào file
+   + đầu tiên mảng result là []
+   + sau đó đẩy vào mảng giá trị đầu chính là header (theo format của CSV)
+   data = [
+  ["firstname", "lastname", "email"],
+  ["Ahmed", "Tomi", "ah@smthing.co.com"],
+  ["Raed", "Labes", "rl@smthing.co.com"],
+  ["Yezzi", "Min l3b", "ymin@cocococo.com"]
   ];
-
+    + tiếp theo lặp qua từng phần tử của mảng Listuser để lấy data của từng phần và push data vào trong result qua mỗi lần lặp 
+    + sau khi lặp xong sẽ setDataExport(result) 
+    + và cuối cungf là báo done() để hàm biết rằng đã xong và sẽ cho data={} lấy dữ liệu
+  */
   return (
     <>
       <div className="flex items-center justify-between ">
@@ -154,12 +183,20 @@ function TableUsers(props) {
           <button className="btn btn-warning mr-2 text-white">
             <FontAwesomeIcon icon={faFileImport} />
             <span className="ml-1">
-              <label htmlFor="import-data-user" className='cursor-pointer'>Import</label>
-              <input type='file' id='import-data-user' className='hidden'/>
+              <label htmlFor="import-data-user" className="cursor-pointer">
+                Import
+              </label>
+              <input type="file" id="import-data-user" className="hidden" />
             </span>
           </button>
 
-          <CSVLink data={csvData} filename={'user.csv'} className="btn btn-primary">
+          <CSVLink
+            data={dataExport}
+            filename={'user.csv'}
+            asyncOnClick={true}
+            onClick={getUserExport}
+            className="btn btn-primary"
+          >
             <FontAwesomeIcon icon={faFileExport} />
             <span className="ml-1">Export</span>
           </CSVLink>
