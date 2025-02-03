@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react';
+
 import Table from 'react-bootstrap/Table';
 import Pagination from '@mui/material/Pagination';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowUpLong, faArrowDownLong } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUpLong, faArrowDownLong, faFileExport, faFileImport, faPlus } from '@fortawesome/free-solid-svg-icons';
+
 import _ from 'lodash';
 import { debounce } from 'lodash';
+
+import { CSVLink, CSVDownload } from 'react-csv';
 
 import { fetchAllUsers } from '~/Services/user-service';
 import AddNewUser from '../AddNewUser';
@@ -112,10 +117,10 @@ function TableUsers(props) {
   // Handle Search
 
   const handleSearchEventInput = (e) => {
-    let value = e.target.value
+    let value = e.target.value;
     handleSearchEvent(value);
     setKeyWord(value);
-  }
+  };
 
   const handleSearchEvent = debounce((value) => {
     let term = value;
@@ -126,8 +131,15 @@ function TableUsers(props) {
     } else {
       getUsers(1);
     }
-
   }, 500);
+
+  // CSV
+  const csvData = [
+    ['firstname', 'lastname', 'email'],
+    ['Ahmed', 'Tomi', 'ah@smthing.co.com'],
+    ['Raed', 'Labes', 'rl@smthing.co.com'],
+    ['Yezzi', 'Min l3b', 'ymin@cocococo.com'],
+  ];
 
   return (
     <>
@@ -137,14 +149,30 @@ function TableUsers(props) {
             <h6>List Users:</h6>
           </span>
         </div>
-        <button
-          className="btn btn-success -translate-y-1"
-          onClick={() => {
-            setIsShowModalAddUser(true);
-          }}
-        >
-          Add new user
-        </button>
+
+        <div>
+          <button className="btn btn-warning mr-2 text-white">
+            <FontAwesomeIcon icon={faFileImport} />
+            <span className="ml-1">
+              <label htmlFor="import-data-user" className='cursor-pointer'>Import</label>
+              <input type='file' id='import-data-user' className='hidden'/>
+            </span>
+          </button>
+
+          <CSVLink data={csvData} filename={'user.csv'} className="btn btn-primary">
+            <FontAwesomeIcon icon={faFileExport} />
+            <span className="ml-1">Export</span>
+          </CSVLink>
+          <button
+            className="btn btn-success ml-2"
+            onClick={() => {
+              setIsShowModalAddUser(true);
+            }}
+          >
+            <FontAwesomeIcon icon={faPlus} />
+            <span className="ml-1">Add new</span>
+          </button>
+        </div>
       </div>
 
       <div>
