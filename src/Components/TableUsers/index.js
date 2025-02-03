@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Table from 'react-bootstrap/Table';
 import Pagination from '@mui/material/Pagination';
@@ -10,6 +10,10 @@ import _ from 'lodash';
 import { debounce } from 'lodash';
 
 import { CSVLink, CSVDownload } from 'react-csv';
+
+import Papa from 'papaparse';
+
+import { toast } from 'react-toastify';
 
 import { fetchAllUsers } from '~/Services/user-service';
 import AddNewUser from '../AddNewUser';
@@ -117,7 +121,6 @@ function TableUsers(props) {
   };
 
   // Handle Search
-
   const handleSearchEventInput = (e) => {
     let value = e.target.value;
     handleSearchEvent(value);
@@ -170,6 +173,52 @@ function TableUsers(props) {
     + sau khi lặp xong sẽ setDataExport(result) 
     + và cuối cungf là báo done() để hàm biết rằng đã xong và sẽ cho data={} lấy dữ liệu
   */
+
+  // Import data from CSV Excel
+  const handleImportCSV = (e) => {
+    if (e.target && e.target.files && e.target.files[0]) {
+      let file = e.target.files[0];
+
+      if (file.type !== 'text/csv') {
+        toast.error('Only accept CSV file');
+        return;
+      } else {
+        // Parse local CSV file
+        Papa.parse(file, {
+          complete: function (results) {
+            let rawCSV = results.data;
+
+            if (rawCSV.length > 0) {
+              if (rawCSV[0] && rawCSV[0].length === 3) {
+                if (rawCSV[0][0] !== 'Email' || rawCSV[0][1] !== 'First Name' || rawCSV[0][2] !== 'Last Name') {
+                  toast.error('Wrong header format');
+                } else {
+                  let result = [];
+
+                  rawCSV.map((item, index) => {
+                    if (index > 0 && item.length === 3) {
+                      let obj = {};
+                      obj.email = item[0];
+                      obj.first_name = item[1];
+                      obj.last_name = item[2];
+                      result.push(obj);
+                    }
+                  });
+
+                  setListUsers(result);
+                }
+              } else {
+                toast.error('Wrong file format');
+              }
+            } else {
+              toast.error('Not found any data in your CSV file');
+            }
+          },
+        });
+      }
+    }
+  };
+
   return (
     <>
       <div className="flex items-center justify-between ">
@@ -186,7 +235,7 @@ function TableUsers(props) {
               <label htmlFor="import-data-user" className="cursor-pointer">
                 Import
               </label>
-              <input type="file" id="import-data-user" className="hidden" />
+              <input type="file" id="import-data-user" hidden onChange={handleImportCSV} />
             </span>
           </button>
 
