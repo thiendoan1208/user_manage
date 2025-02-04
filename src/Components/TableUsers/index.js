@@ -195,6 +195,7 @@ function TableUsers(props) {
                 } else {
                   let result = [];
 
+                  // eslint-disable-next-line array-callback-return
                   rawCSV.map((item, index) => {
                     if (index > 0 && item.length === 3) {
                       let obj = {};
