@@ -12,7 +12,7 @@ const cx = classNames.bind(styles);
 
 function Header() {
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
+    <Navbar expand="lg" fixed='top' className="bg-body-tertiary">
       <Container>
         <Navbar.Brand href="/">
           <div className="flex items-center">
