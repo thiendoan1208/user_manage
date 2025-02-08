@@ -1,6 +1,9 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faEye, faEyeSlash, faL } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-toastify';
+
+import { loginAPI } from '~/Services/user-service';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -23,7 +26,17 @@ function Login() {
     }
   };
 
-  console.log(email);
+  const handleLogin = async () => {
+    if (!email || !password) {
+      toast.error('Missing email or password');
+      return;
+    }
+
+    let res = await loginAPI('eve.holt@reqres.in', password);
+    if (res && res.token) {
+      localStorage.setItem('token', res.token);
+    }
+  };
 
   return (
     <div className="login-form mx-2 sm:mx-3 md:m-0 h-screen flex items-center justify-center">
@@ -63,7 +76,15 @@ function Login() {
             )}
           </div>
         </form>
-        <button disabled={email && password ? false : true} className={`text-center py-2 my-2 ${email && password ? "bg-customLoginColorBtn" : "bg-gray-100"} rounded-sm ${email && password ? "text-white" : "text-gray-300"}  font-semibold`}>Login</button>
+        <button
+          disabled={email && password ? false : true}
+          className={`text-center py-2 my-2 ${
+            email && password ? 'bg-customLoginColorBtn' : 'bg-gray-100'
+          } rounded-sm ${email && password ? 'text-white' : 'text-gray-300'}  font-semibold`}
+          onClick={handleLogin}
+        >
+          Login
+        </button>
         <div className="flex justify-center items-center mt-2">
           <FontAwesomeIcon className="mx-2 cursor-pointer" icon={faChevronLeft} />
           <p className="mb-1 cursor-pointer">Go back</p>
@@ -71,8 +92,6 @@ function Login() {
       </div>
     </div>
   );
-  
 }
-
 
 export default Login;
