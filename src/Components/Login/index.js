@@ -72,12 +72,12 @@ function Login() {
   }, [setShowLoadingAPI, showLoadingAPI]);
 
   // không cho người dùng vào trang login khi đã đăng nhập
-  // useEffect(() => {
-  //   let token = localStorage.getItem('token');
-  //   if (token) {
-  //     navigate('/');
-  //   }
-  // });
+  useEffect(() => {
+    let token = localStorage.getItem('token');
+    if (token) {
+      navigate('/');
+    }
+  });
 
   return (
     <div className="login-form mx-2 sm:mx-3 md:m-0  flex items-center justify-center">

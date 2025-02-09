@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { createContext, useState } from 'react';
 
 // @function  UserContext
-const UserContext = React.createContext({ email: '', auth: false });
+const UserContext = createContext({ email: '', auth: false });
 
 // @function  UserProvider
 // Create function to provide UserContext
