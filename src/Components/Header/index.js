@@ -3,16 +3,25 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import images from '~/assets/images';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 import styles from './Header.module.scss';
 import classNames from 'classnames/bind';
+import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
 function Header() {
+  const navigate = useNavigate();
+
+  const handleLogOut = () => {
+    localStorage.removeItem('token');
+    navigate('/');
+    toast.success('Logout success !');
+  };
+
   return (
-    <Navbar expand="lg" fixed='top' className="bg-body-tertiary">
+    <Navbar expand="lg" fixed="top" className="bg-body-tertiary">
       <Container>
         <Navbar.Brand href="/">
           <div className="flex items-center">
@@ -36,8 +45,13 @@ function Header() {
               <NavDropdown.Item href="#action/3.2">Support</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.3">Contact</NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="/login">Login</NavDropdown.Item>
-              <NavDropdown.Item href="/logout">Logout</NavDropdown.Item>
+              <NavLink
+                className=" display: block w-full py-1 px-3 hover:bg-gray-50 text-black text-decoration-none"
+                to="/login"
+              >
+                <span>Login</span>
+              </NavLink>
+              <NavDropdown.Item onClick={handleLogOut}>Logout</NavDropdown.Item>
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>

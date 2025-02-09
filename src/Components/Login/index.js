@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faEye, faEyeSlash, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import './Login.scss';
 
 import { loginAPI } from '~/Services/user-service';
 
@@ -9,6 +12,11 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showLoadingAPI, setShowLoadingAPI] = useState(false);
+
+  const LoginBtn = useRef();
+
+  const navigate = useNavigate();
 
   const handleEmailInput = (e) => {
     setEmail(e.target.value);
@@ -32,21 +40,51 @@ function Login() {
       return;
     }
 
-    let res = await loginAPI('eve.holt@reqres.in', password);
+    setShowLoadingAPI(true);
+    
+    let res = await loginAPI(email, password);
     if (res && res.token) {
       localStorage.setItem('token', res.token);
+      navigate('/');
+      toast.success('Login success');
+    } else {
+      if (res && res.status === 400) {
+        toast.error(res.data.error);
+      }
     }
+    setShowLoadingAPI(false);
   };
 
+  // Disable Btn when loading API
+  useEffect(() => {
+    const loginButtonRef = LoginBtn.current;
+
+    if (showLoadingAPI) {
+      loginButtonRef.classList.add('pointer-events-none');
+      loginButtonRef.classList.add('bg-gray-200');
+    } else {
+      loginButtonRef.classList.remove('pointer-events-none');
+      loginButtonRef.classList.remove('bg-gray-200');
+    }
+  }, [setShowLoadingAPI, showLoadingAPI]);
+
+  // không cho người dùng vào trang login khi đã đăng nhập
+  useEffect(() => {
+    let token = localStorage.getItem('token');
+    if (token) {
+      navigate('/');
+    }
+  });
+
   return (
-    <div className="login-form mx-2 sm:mx-3 md:m-0 h-screen flex items-center justify-center">
+    <div className="login-form mx-2 sm:mx-3 md:m-0  flex items-center justify-center">
       <div className="flex flex-col w-96">
         <div className="mb-4 text-xl font-bold text-center">Login</div>
         <div className="font-semibold">Email or Username</div>
         <form>
           <input
             type="text"
-            className="w-full p-2 border-gray-300 border rounded my-1 bg-gray-100 outline-none hover:bg-gray-200 transition "
+            className="w-full h- p-2 border-gray-300 border rounded my-1 bg-gray-100 outline-none hover:bg-gray-200 transition "
             placeholder="Email or Username"
             value={email}
             onChange={handleEmailInput}
@@ -77,18 +115,24 @@ function Login() {
           </div>
         </form>
         <button
+          ref={LoginBtn}
           disabled={email && password ? false : true}
-          className={`text-center py-2 my-2 ${
-            email && password ? 'bg-customLoginColorBtn' : 'bg-gray-100'
-          } rounded-sm ${email && password ? 'text-white' : 'text-gray-300'}  font-semibold`}
+          className={`login_btn flex justify-center items-center text-center py-2 my-2 rounded-sm font-semibold 
+            ${email && password ? 'bg-customLoginColorBtn' : 'bg-gray-100'}  
+            ${email && password ? 'text-white' : 'text-gray-300'} `}
           onClick={handleLogin}
         >
-          Login
+          <span>Login</span>
+          {showLoadingAPI && (
+            <svg className="ml-1 mr-3 size-5 animate-spin ..." viewBox="0 0 24 24">
+              <FontAwesomeIcon icon={faSpinner} />
+            </svg>
+          )}
         </button>
-        <div className="flex justify-center items-center mt-2">
+        <Link to="/" className="flex justify-center items-center mt-2 text-black text-decoration-none">
           <FontAwesomeIcon className="mx-2 cursor-pointer" icon={faChevronLeft} />
           <p className="mb-1 cursor-pointer">Go back</p>
-        </div>
+        </Link>
       </div>
     </div>
   );
