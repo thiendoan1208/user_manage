@@ -4,8 +4,10 @@ import { faChevronLeft, faEye, faEyeSlash, faSpinner } from '@fortawesome/free-s
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import './Login.scss';
+import { useContext } from 'react';
+import { UserContext } from '~/Context/UserContext';
 
+import './Login.scss';
 import { loginAPI } from '~/Services/user-service';
 
 function Login() {
@@ -13,6 +15,8 @@ function Login() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showLoadingAPI, setShowLoadingAPI] = useState(false);
+
+  const { loginContext, user } = useContext(UserContext);
 
   const LoginBtn = useRef();
 
@@ -41,12 +45,11 @@ function Login() {
     }
 
     setShowLoadingAPI(true);
-    
     let res = await loginAPI(email, password);
     if (res && res.token) {
-      localStorage.setItem('token', res.token);
-      navigate('/');
       toast.success('Login success');
+      loginContext(res, email);
+      navigate('/');
     } else {
       if (res && res.status === 400) {
         toast.error(res.data.error);
@@ -69,18 +72,18 @@ function Login() {
   }, [setShowLoadingAPI, showLoadingAPI]);
 
   // không cho người dùng vào trang login khi đã đăng nhập
-  useEffect(() => {
-    let token = localStorage.getItem('token');
-    if (token) {
-      navigate('/');
-    }
-  });
+  // useEffect(() => {
+  //   let token = localStorage.getItem('token');
+  //   if (token) {
+  //     navigate('/');
+  //   }
+  // });
 
   return (
     <div className="login-form mx-2 sm:mx-3 md:m-0  flex items-center justify-center">
       <div className="flex flex-col w-96">
         <div className="mb-4 text-xl font-bold text-center">Login</div>
-        <div className="font-semibold">Email or Username</div>
+        <div className="font-semibold">Email or Username (eve.holt@reqres.in)</div>
         <form>
           <input
             type="text"

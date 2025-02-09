@@ -7,15 +7,18 @@ import GlobalStyles from '~/Components/GlobalStyles/GlobalStyles';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { BrowserRouter } from 'react-router-dom';
+import { UserProvider } from './Context/UserContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <GlobalStyles>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </GlobalStyles>
+    <UserProvider>
+      <GlobalStyles>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </GlobalStyles>
+    </UserProvider>
   </React.StrictMode>,
 );
 
