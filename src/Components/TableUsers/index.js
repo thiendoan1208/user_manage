@@ -222,14 +222,14 @@ function TableUsers(props) {
 
   return (
     <>
-      <div className="flex items-center justify-between ">
-        <div className="my-1 flex items-center">
+      <div className="flex justify-between items-start md:items-center flex-col sm:flex-row">
+        <div className=" my-1 flex items-center">
           <span>
             <h6>List Users:</h6>
           </span>
         </div>
 
-        <div>
+        <div className=''>
           <button className="btn btn-warning mr-2 text-white">
             <FontAwesomeIcon icon={faFileImport} />
             <span className="ml-1">
@@ -264,96 +264,98 @@ function TableUsers(props) {
 
       <div>
         <input
-          className="border border-red-400 p-1 my-2 width-full"
+          className="w-full sm:w-1/2 md:w-1/4 border border-red-400 p-1 my-2 "
           placeholder="Find User..."
           value={keyWord}
           onChange={handleSearchEventInput}
         />
       </div>
 
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>
-              <div className="flex justify-between">
-                <span>ID</span>
-                <span>
-                  <FontAwesomeIcon
-                    className="px-1 cursor-pointer hover:opacity-70 transition-all  "
-                    icon={faArrowDownLong}
-                    onClick={() => {
-                      handleSort('id', 'desc');
-                    }}
-                  />
-                  <FontAwesomeIcon
-                    className="px-1 cursor-pointer hover:opacity-70 transition-all  "
-                    icon={faArrowUpLong}
-                    onClick={() => {
-                      handleSort('id', 'asc');
-                    }}
-                  />
-                </span>
-              </div>
-            </th>
-            <th>
-              <div className="flex justify-between">
-                <span>First Name</span>
-                <span>
-                  <FontAwesomeIcon
-                    className="px-1 cursor-pointer hover:opacity-70 transition-all  "
-                    icon={faArrowDownLong}
-                    onClick={() => {
-                      handleSort('first_name', 'desc');
-                    }}
-                  />
-                  <FontAwesomeIcon
-                    className="px-1 cursor-pointer hover:opacity-70 transition-all  "
-                    icon={faArrowUpLong}
-                    onClick={() => {
-                      handleSort('first_name', 'asc');
-                    }}
-                  />
-                </span>
-              </div>
-            </th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {listUsers &&
-            listUsers.length > 0 &&
-            listUsers.map((item, index) => (
-              <tr key={`user-${index}`}>
-                <td>{item.id}</td>
-                <td>{item.first_name}</td>
-                <td>{item.last_name}</td>
-                <td>{item.email}</td>
-                <td className="flex">
-                  <button
-                    className=" mx-1 btn btn-warning"
-                    onClick={() => {
-                      handleEditUser(item);
-                    }}
-                  >
-                    Edit
-                  </button>
-
-                  <button
-                    className="mx-1 btn btn-danger"
-                    onClick={() => {
-                      handleDeleteUser(item);
-                    }}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </Table>
-
+   <div className='overflow-x-auto'>
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>
+                <div className="flex justify-between">
+                  <span>ID</span>
+                  <span>
+                    <FontAwesomeIcon
+                      className="px-1 cursor-pointer hover:opacity-70 transition-all  "
+                      icon={faArrowDownLong}
+                      onClick={() => {
+                        handleSort('id', 'desc');
+                      }}
+                    />
+                    <FontAwesomeIcon
+                      className="px-1 cursor-pointer hover:opacity-70 transition-all  "
+                      icon={faArrowUpLong}
+                      onClick={() => {
+                        handleSort('id', 'asc');
+                      }}
+                    />
+                  </span>
+                </div>
+              </th>
+              <th>
+                <div className="flex justify-between">
+                  <span>First Name</span>
+                  <span>
+                    <FontAwesomeIcon
+                      className="px-1 cursor-pointer hover:opacity-70 transition-all  "
+                      icon={faArrowDownLong}
+                      onClick={() => {
+                        handleSort('first_name', 'desc');
+                      }}
+                    />
+                    <FontAwesomeIcon
+                      className="px-1 cursor-pointer hover:opacity-70 transition-all  "
+                      icon={faArrowUpLong}
+                      onClick={() => {
+                        handleSort('first_name', 'asc');
+                      }}
+                    />
+                  </span>
+                </div>
+              </th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {listUsers &&
+              listUsers.length > 0 &&
+              listUsers.map((item, index) => (
+                <tr key={`user-${index}`}>
+                  <td>{item.id}</td>
+                  <td>{item.first_name}</td>
+                  <td>{item.last_name}</td>
+                  <td>{item.email}</td>
+                  <td className="flex">
+                    <button
+                      className=" mx-1 btn btn-warning"
+                      onClick={() => {
+                        handleEditUser(item);
+                      }}
+                    >
+                      Edit
+                    </button>
+  
+                    <button
+                      className="mx-1 btn btn-danger"
+                      onClick={() => {
+                        handleDeleteUser(item);
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </Table>
+  
+   </div>
       <div className="flex justify-center items-center">
         <Pagination count={totalPages} onChange={hanglePageClick} />
       </div>

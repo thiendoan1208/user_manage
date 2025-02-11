@@ -4,7 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import images from '~/assets/images';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { UserContext } from '~/Context/UserContext';
 
 import styles from './Header.module.scss';
@@ -16,8 +16,6 @@ const cx = classNames.bind(styles);
 function Header() {
   const { logout, user } = useContext(UserContext);
 
-  const [hideHeader, setHideHeader] = useState(false);
-
   const navigate = useNavigate();
 
   const handleLogOut = () => {
@@ -25,12 +23,6 @@ function Header() {
     navigate('/');
     toast.success('Logout success !');
   };
-
-  // useEffect(() => {
-  //   if (window.location.pathname === '/login') {
-  //     setHideHeader(true);
-  //   }
-  // }, []);
 
   return (
     <Navbar expand="lg" fixed="top" className="bg-body-tertiary">
@@ -40,7 +32,7 @@ function Header() {
             <img src={images.HeaderLogo} alt="Logo" className="w-10" />
             {user && user.email ? (
               <span className="nav-link opacity-50">
-                Welcome back <span className="font-semibold">{user.email} </span>!
+                Welcome back <span className="font-semibold hidden sm:inline-block">{user.email}</span>!
               </span>
             ) : (
               <span>User Manage</span>

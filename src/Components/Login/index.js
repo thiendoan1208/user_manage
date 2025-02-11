@@ -45,7 +45,7 @@ function Login() {
     }
 
     setShowLoadingAPI(true);
-    let res = await loginAPI(email, password);
+    let res = await loginAPI(email.trim(), password);
     if (res && res.token) {
       toast.success('Login success');
       loginContext(res, email);
@@ -56,6 +56,28 @@ function Login() {
       }
     }
     setShowLoadingAPI(false);
+  };
+
+  const handleKeyDown = async (e) => {
+    if (e.key === 'Enter') {
+      if (!email || !password) {
+        toast.error('Missing email or password');
+        return;
+      }
+
+      setShowLoadingAPI(true);
+      let res = await loginAPI(email.trim(), password);
+      if (res && res.token) {
+        toast.success('Login success');
+        loginContext(res, email);
+        navigate('/');
+      } else {
+        if (res && res.status === 400) {
+          toast.error(res.data.error);
+        }
+      }
+      setShowLoadingAPI(false);
+    }
   };
 
   // Disable Btn when loading API
@@ -100,6 +122,7 @@ function Login() {
               placeholder="Password"
               value={password}
               onChange={handlePasswordInput}
+              onKeyDown={handleKeyDown}
               autoComplete="current-password"
             />
             {showPassword ? (
